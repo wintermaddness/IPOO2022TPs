@@ -144,13 +144,12 @@
         /**
          * Método 4: eliminarPasajeros - 
          * Elimina a un determinado pasajero.
+         * @return boolean
          */
         public function eliminarPasajeros($documentoPasajero) {
             $arrayPasajeros = $this->getObjArrayPasajeros();
             $indMaximo = count($arrayPasajeros);
-            $dniEncontrado = false;
             $modificacion = false;
-            $posicion = 0;
             $i = 0;
             $arrayModificado = [];
             while (($i<$indMaximo) && ($arrayPasajeros[$i]->getDni() != $documentoPasajero)) {
@@ -177,8 +176,7 @@
 
         /**
          * Método 5: modificarPasajeros - 
-         * Modifica los datos de un pasajero.
-         * NOTA: Se puede usar "*" para dejar algún dato igual/sin modificar.
+         * Modifica los datos de un pasajero determinado.
          */
         public function modificarPasajeros($documentoPasajero, $nombre, $apellido, $telefono) {
             $arrayPasajeros = $this->getObjArrayPasajeros();
@@ -201,7 +199,7 @@
 
         /**
          * Método 6: mostrarPasajeros - 
-         * Muestra los datos de un pasajero.
+         * Muestra los datos de un pasajero determinado.
          * @return string
          */
         public function mostrarPasajeros($documentoPasajero) {
@@ -242,7 +240,7 @@
 
         /**
          * Método 8: modificarDatosResponsable - 
-         * Modifica los datos del viaje.
+         * Modifica los datos del responsable del viaje.
          * @return boolean
          */
         public function modificarDatosResponsable($nombre, $apellido, $empleado, $licencia) {
