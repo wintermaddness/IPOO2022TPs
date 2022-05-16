@@ -1,17 +1,4 @@
 <?php
-    /**
-     * Nota: Recuerden que deben enviar el link a la resolución en su repositorio en GitHub.
-     * 1) Modificar la clase Viaje para que ahora los pasajeros sean un objeto que tenga los atributos:
-     *  a. ATRIBUTOS: nombre, apellido, numero de documento y teléfono.
-     *  b. El viaje ahora contiene una referencia a una colección de objetos de la clase Pasajero.
-     * 2) También se desea guardar la información de la persona responsable de realizar el viaje:
-     *  a. Cree una clase ResponsableV que registre el número de empleado, número de licencia, nombre y apellido.
-     *  b. La clase Viaje debe hacer referencia al responsable de realizar el viaje. 
-     * 3) Volver a implementar las operaciones que permiten modificar el nombre, apellido y teléfono de un pasajero.
-     * 4) Luego implementar la operación que agrega los pasajeros al viaje, solicitando por consola la información de los mismos.
-     *  a. Se debe verificar que el pasajero no este cargado mas de una vez en el viaje.
-     *  b. De la misma forma cargue la información del responsable del viaje.
-     */
     class Viaje {
         private $codigoViaje;
         private $destino;
@@ -146,16 +133,16 @@
          * Elimina a un determinado pasajero.
          * @return boolean
          */
-        public function eliminarPasajeros($documentoPasajero) {
+        public function eliminarPasajeros($posPasajero) {
             $arrayPasajeros = $this->getObjArrayPasajeros();
             $indMaximo = count($arrayPasajeros);
             $modificacion = false;
             $i = 0;
             $arrayModificado = [];
-            while (($i<$indMaximo) && ($arrayPasajeros[$i]->getDni() != $documentoPasajero)) {
+            while (($i<$indMaximo) && ($arrayPasajeros[$i] != $posPasajero)) {
                 $i++;
             }
-            if ($arrayPasajeros[$i]->getDni() == $documentoPasajero) {
+            if ($arrayPasajeros[$i] == $posPasajero) {
                 $j = 0;
                 while ($j<($indMaximo-1) && ($j != $i)) {
                     $arrayModificado[$j] = $arrayPasajeros[$j];
@@ -178,23 +165,32 @@
          * Método 5: modificarPasajeros - 
          * Modifica los datos de un pasajero determinado.
          */
-        public function modificarPasajeros($documentoPasajero, $nombre, $apellido, $telefono) {
-            $arrayPasajeros = $this->getObjArrayPasajeros();
-            $cantPasajeros = count($arrayPasajeros);
+        public function modificarPasajeros($arrayViajes, $posPasajero, $nombre, $apellido, $telefono) {
+            $cantViajes = count($arrayViajes);
+            $bandera = false;
             $i = 0;
-            $encontrado = false;
-            while ($i<$cantPasajeros && !$encontrado) {
-                $unPasajero = $arrayPasajeros[$i];
-                if ($unPasajero->getDni() == $documentoPasajero) {
-                    $unPasajero->setNombre($nombre);
-                    $unPasajero->setApellido($apellido);
-                    $unPasajero->setTelefono($telefono);
-                    $arrayPasajeros[$i] = $unPasajero;
-                    $encontrado = true;
+            while ($bandera && $i<$cantViajes) {
+                if ($arrayViajes[$i] == $posPasajero) {
+                    $unViaje = $arrayViajes[$i];
+                    $arrayPasajeros = $unViaje->getObjArrayPasajeros();
+                    $cantPasajeros = count($arrayPasajeros);
+                    $i = 0;
+                    $encontrado = false;
+                    while ($i<$cantPasajeros && !$encontrado) {
+                        $unPasajero = $arrayPasajeros[$i];
+                        if ($unPasajero == $posPasajero) {
+                            $unPasajero->setNombre($nombre);
+                            $unPasajero->setApellido($apellido);
+                            $unPasajero->setTelefono($telefono);
+                            $arrayPasajeros[$i] = $unPasajero;
+                            $encontrado = true;
+                        }
+                        $i++;
+                    }
+                    $this->setObjArrayPasajeros($arrayPasajeros);
                 }
                 $i++;
             }
-            $this->setObjArrayPasajeros($arrayPasajeros);
         }
 
         /**
@@ -225,7 +221,7 @@
          * @return boolean
          */
         public function modificarDatosViaje($codViaje, $destino, $capacidadMaxima) {
-            $bandera = true;
+            $bandera = false;
             if ($codViaje != "*") {
                 $this->setCodigoViaje($codViaje);
             }
@@ -235,6 +231,7 @@
             if ($capacidadMaxima != "*") {
                 $this->setCapacidadPasajeros($capacidadMaxima);
             }
+            $bandera = true;
             return $bandera;
         }
 
@@ -243,23 +240,59 @@
          * Modifica los datos del responsable del viaje.
          * @return boolean
          */
-        public function modificarDatosResponsable($nombre, $apellido, $empleado, $licencia) {
-            $objResponsable = $this->getObjResponsable();
-            $bandera = true;
+        public function modificarDatosResponsable($arrayViajes, $posResponsable, $nombre, $apellido, $empleado, $licencia) {
+            $bandera = false;
+            $objResponsableViaje = $arrayViajes[$posResponsable]->getObjResponsable();
             if ($nombre != "*") {
-                $objResponsable->setNombre($nombre);
+                $objResponsableViaje->setNombre($nombre);
             }
             if ($apellido != "*") {
-                $objResponsable->setApellido($apellido);
+                $objResponsableViaje->setApellido($apellido);
             }
             if ($empleado != "*") {
-                $objResponsable->setNroEmpleado($empleado);
+                $objResponsableViaje->setNroEmpleado($empleado);
             }
             if ($licencia != "*") {
-                $objResponsable->setNroLicencia($licencia);
+                $objResponsableViaje->setNroLicencia($licencia);
             }
+            $bandera = true;
             return $bandera;
         }
+
+        /**
+         * Método 9: hayPasajesDisponible() - 
+         * Retorna TRUE si la cantidad de pasajeros del viaje es menor a la cantidad máxima de pasajeros y FALSE caso contrario.
+         * @return boolean
+         */
+        public function hayPasajesDisponibles() {
+            $arrayPasajeros = $this->getObjArrayPasajeros();
+            $cantMaxPasajeros = $this->getCapacidadPasajeros();
+            $cantPasajeros = count($arrayPasajeros);
+            $pasajesDisponibles = false;
+            if ($cantPasajeros < $cantMaxPasajeros) {
+                $pasajesDisponibles = true;
+            }
+            return $pasajesDisponibles;
+        }
+
+        /**
+         * Método 10: mostrarListaPasajeros - 
+         * Retorna una cadena de strings con todos los pasajeros del viaje.
+         * @return string
+         */
+        public function mostrarListaPasajeros() {
+            $cadenaPasajeros = "";
+            if (count($this->getObjArrayPasajeros()) == 0) {
+                $cadenaPasajeros = "   >>> Aún no se han agregado pasajeros.";
+            } else {
+                $i = 0;
+                foreach ($this->getObjArrayPasajeros() as $unPasajero) {
+                    $pasajero = $unPasajero->__toString();
+                    $cadenaPasajeros .= $i+1 .")\n".$pasajero; 
+                }
+            }
+            return $cadenaPasajeros;
+        } 
 
         public function __toString() {
             $pasajeros = $this->getObjArrayPasajeros();
