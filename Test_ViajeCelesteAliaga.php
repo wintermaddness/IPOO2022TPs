@@ -47,12 +47,12 @@
 
 	function buscarViaje($arrayViajes, $nroViaje) {
 		$cantViajes = count($arrayViajes);
-		$codigoEncontrado = true;
+		//$codigoEncontrado = true;
 		$viajeEncontrado = null;
 		$i = 0;
 		while ($viajeEncontrado && $i<$cantViajes) {
 			if ($arrayViajes[$i] == $nroViaje) {
-				$codigoEncontrado = false;
+				//$codigoEncontrado = false;
 				$viajeEncontrado = $arrayViajes[$i];
 			}
 			$i++;
@@ -138,7 +138,6 @@
                     echo "	>>> ERROR. Ingrese una opción válida (1, 2 ó 3).\n";
                 }
             } while($trayectoriaViaje > 3 || $trayectoriaViaje < 1);
-
             //Se crean los objetos:
             $objResponsable = new ResponsableV($nombreResponsable, $apellidoResponsable, $nroEmpleado, $nroLicencia);
             $viajeCreado = new ViajesAereos($codViaje, $destino, $capacidadMaxima, $objResponsable, $nroVuelo, $categoriaAsiento, $nombreAerolinea, $cantEscalas, $precioAereo, $trayectoriaViaje);
@@ -195,14 +194,14 @@
 					//$objEmpresaTransportes->agregarViaje($viajeTerrestre);
                     $arrayViajes[count($arrayViajes)] = $viajeTerrestre;
 					echo $viajeTerrestre."\n";
-					echo ">>> Se gregó el viaje terrestre con éxito.\n";
+					echo ">>> Se agregó el viaje terrestre con éxito.\n";
 				} elseif ($opcionViaje == 2) {
 					$viajeAereo = crearViaje($opcionViaje);
 					//array_push($arrayViajes, $viajeAereo);
 					//$objEmpresaTransportes->agregarViaje($viajeAereo);
                     $arrayViajes[count($arrayViajes)] = $viajeAereo;
 					echo $viajeAereo."\n";
-					echo ">>> Se gregó el viaje aéreo con éxito.\n";
+					echo ">>> Se agregó el viaje aéreo con éxito.\n";
 				}
             break;
             case 2:
