@@ -193,7 +193,7 @@
                     $arrayViaje = array();
                     while ($row2 = $base->Registro()) {
                         $codigoViaje = $row2['idviaje'];
-                        $destino = $row2['vdestino'];
+                        /*$destino = $row2['vdestino'];
                         $capacidadPasajeros = $row2['vcantmaxpasajeros'];
                         $idEmpresa = $row2['idempresa'];
                         $objResponsable = $row2['rnumeroempleado'];
@@ -202,7 +202,11 @@
                         $idayvuelta = $row2['idayvuelta'];
                         $nuevoViaje = new Viaje();
                         $nuevoViaje->cargar($codigoViaje, $destino, $capacidadPasajeros, $idEmpresa, $objResponsable, $importe, $tipoAsiento, $idayvuelta);
-                        array_push($arrayViaje, $nuevoViaje);
+                        array_push($arrayViaje, $nuevoViaje);*/
+                        
+                        $objViaje = new Viaje();
+                        $objViaje->buscar($codigoViaje);
+                        array_push($arrayViaje, $objViaje);
                     }
                  } else {
                     $this->setmensajeoperacion($base->getError());
