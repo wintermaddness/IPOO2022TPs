@@ -97,7 +97,6 @@
                     if ($row2 = $baseDatos->registro()) {
                         //Se busca el objViaje por el código de viaje:
                         $objViaje = new Viaje();
-                        $objViaje->Buscar($this->getIdViaje());
 
                         $this->setDni($nroDocumento);
                         $this->setNombre($row2['pnombre']);

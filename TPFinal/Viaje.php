@@ -14,8 +14,8 @@
         private $codigoViaje; //idViaje
         private $destino;
         private $capacidadPasajeros; //cantMaxPasajeros
-        private $idEmpresa;
-        private $objResponsable;
+        private $idEmpresa; //objEmpresa
+        private $objResponsable; //objResponsable
         private $importe;
         private $tipoAsiento;
         private $idayvuelta;
@@ -116,13 +116,14 @@
             $responsable = new ResponsableV();
             $empresa = new Empresa();
             //Se obtienen los datos del responsable del viaje:
-            if ($responsable->Buscar($this->getObjResponsable())) {
+            if ($responsable->buscar($this->getObjResponsable())) {
                 $cadenaResponsable .= $responsable;
             }
             //Se obtienen los datos de la empresa asociada al viaje:
-            if($empresa->Buscar($this->getIdEmpresa())){
-                $cadenaEmpresa .= $empresa;
+            if ($empresa->buscar($this->getIdEmpresa())) {
+                $cadenaEmpresa .= $empresa->__toString();
             }
+
             $cadena = "-- -- -- DATOS DEL VIAJE -- -- --\n"
                     ."+| Código del viaje: ".$this->getCodigoViaje()."\n"
                     ."+| Destino: ".$this->getDestino()."\n"
@@ -132,6 +133,7 @@
                     ."+| Trayectoria: ".$this->getIdayvuelta()."\n"
                     ."+| Importe del viaje: ".$this->getImporte()."\n"
                     //."+| ID Empresa: ".$this->getIdEmpresa()."\n"
+                    //."+| Nro. Responsable: ".$this->getObjResponsable()."\n";
                     .$cadenaEmpresa."\n"
                     .$cadenaResponsable."\n";
             return $cadena;
@@ -151,11 +153,16 @@
             if ($baseDatos->iniciar()) {
                 if ($baseDatos->ejecutar($consulta)) {
                     if ($row2 = $baseDatos->registro()) {
+                        $objEmpresa = new Empresa();
+                        $objResponsable = new ResponsableV();
+
                         $this->setCodigoViaje($id);
                         $this->setDestino($row2['vdestino']);
                         $this->setCapacidadPasajeros($row2['vcantmaxpasajeros']);
-                        $this->setIdEmpresa($row2['idempresa']);
-                        $this->setObjResponsable($row2['rnumeroempleado']);
+                        //$this->setIdEmpresa($row2['idempresa']);
+                        //$this->setObjResponsable($row2['rnumeroempleado']);
+                        $this->setIdEmpresa($objEmpresa->getIdEmpresa());
+                        $this->setObjResponsable($objResponsable->getNroEmpleado());
                         $this->setImporte($row2['vimporte']);
                         $this->setTipoAsiento($row2['tipoAsiento']);
                         $this->setIdayvuelta($row2['idayvuelta']);
@@ -221,6 +228,8 @@
          * Método 3: insertar - 
          * Inserta una nueva tupla en la tabla "viaje".
          * @return boolean $resp
+         * '".$this->getIdEmpresa()->getIdEmpresa()."',
+         * '".$this->getObjResponsable()->getNroEmpleado()."',
          */
         public function insertar() {
             $base = new BaseDatos();
@@ -229,8 +238,8 @@
                                 VALUES ('".$this->getCodigoViaje()."',
                                         '".$this->getDestino()."',
                                         '".$this->getCapacidadPasajeros()."',
-                                        '".$this->getIdEmpresa()."',
-                                        '".$this->getObjResponsable()."',
+                                        '".$this->getIdEmpresa()->getIdEmpresa()."',
+                                        '".$this->getObjResponsable()->getNroEmpleado()."',
                                         '".$this->getImporte()."',
                                         '".$this->getTipoAsiento()."',
                                         '".$this->getIdayvuelta()."')";
@@ -257,8 +266,8 @@
             $baseDatos = new BaseDatos();
             $consultaModifica = "UPDATE viaje SET vdestino = '".$this->getDestino()."',
                                                 vcantmaxpasajeros = '".$this->getCapacidadPasajeros()."',
-                                                idempresa = '".$this->getIdEmpresa()."',
-                                                rnumeroempleado = '".$this->getObjResponsable()."',
+                                                idempresa = '".$this->getIdEmpresa()->getIdEmpresa()."',
+                                                rnumeroempleado = '".$this->getObjResponsable()->getNroEmpleado()."',
                                                 vimporte = '".$this->getImporte()."',
                                                 tipoAsiento = '".$this->getTipoAsiento()."',
                                                 idayvuelta = '".$this->getIdayvuelta()."'
@@ -309,7 +318,7 @@
             if ($base->Iniciar()) {
                 if ($base->Ejecutar($consulta)) {
                     $arregloPasajeros = array();
-                    while ($row2=$base->Registro()) {
+                    while ($row2 = $base->Registro()) {
                         $dni = $row2['rdocumento'];
                         $nombre = $row2['pnombre'];
                         $apellido = $row2['papellido'];
