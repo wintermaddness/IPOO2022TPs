@@ -97,13 +97,15 @@
                     if ($row2 = $baseDatos->registro()) {
                         //Se busca el objViaje por el código de viaje:
                         $objViaje = new Viaje();
+                        $objViaje->buscar($row2['idviaje']);
 
                         $this->setDni($nroDocumento);
                         $this->setNombre($row2['pnombre']);
                         $this->setApellido($row2['papellido']);
                         $this->setTelefono($row2['ptelefono']);
                         //$this->setIdViaje($row2['idviaje']); Tiene que ser objViaje
-                        $this->setIdViaje($objViaje->getCodigoViaje());
+                        //$this->setIdViaje($objViaje->getCodigoViaje());
+                        $this->setIdViaje($objViaje);
                         $resp = true;
                     }
                 } else {
@@ -195,7 +197,7 @@
             $consultaModifica = "UPDATE pasajero SET pnombre = '".$this->getNombre()."',
                                                 papellido = '".$this->getApellido()."',
                                                 ptelefono = '".$this->getTelefono()."',
-                                                idviaje = '".$this->getIdViaje()."'
+                                                idviaje = '".$this->getIdViaje()->getCodigoViaje()."'
                                                 WHERE rdocumento = ". $this->getDni();
             if ($baseDatos->Iniciar()) {
                 if ($baseDatos->Ejecutar($consultaModifica)) {

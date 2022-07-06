@@ -111,7 +111,7 @@
 
         public function __toString() {
             $pasajeros = $this->listarPasajeros();
-            $cadenaResponsable = "";
+            /*$cadenaResponsable = "";
             $cadenaEmpresa = "";
             $responsable = new ResponsableV();
             $empresa = new Empresa();
@@ -122,7 +122,7 @@
             //Se obtienen los datos de la empresa asociada al viaje:
             if ($empresa->buscar($this->getIdEmpresa())) {
                 $cadenaEmpresa .= $empresa->__toString();
-            }
+            }*/
 
             $cadena = "-- -- -- DATOS DEL VIAJE -- -- --\n"
                     ."+| Código del viaje: ".$this->getCodigoViaje()."\n"
@@ -134,8 +134,10 @@
                     ."+| Importe del viaje: ".$this->getImporte()."\n"
                     //."+| ID Empresa: ".$this->getIdEmpresa()."\n"
                     //."+| Nro. Responsable: ".$this->getObjResponsable()."\n";
-                    .$cadenaEmpresa."\n"
-                    .$cadenaResponsable."\n";
+                    //.$cadenaEmpresa."\n"
+                    //.$cadenaResponsable."\n";
+                    .$this->getIdEmpresa()."\n"
+                    .$this->getObjResponsable()."\n";
             return $cadena;
         }
 
@@ -155,14 +157,18 @@
                     if ($row2 = $baseDatos->registro()) {
                         $objEmpresa = new Empresa();
                         $objResponsable = new ResponsableV();
+                        $objEmpresa->buscar($row2['idempresa']);
+                        $objResponsable->buscar($row2['rnumeroempleado']);
 
                         $this->setCodigoViaje($id);
                         $this->setDestino($row2['vdestino']);
                         $this->setCapacidadPasajeros($row2['vcantmaxpasajeros']);
                         //$this->setIdEmpresa($row2['idempresa']);
                         //$this->setObjResponsable($row2['rnumeroempleado']);
-                        $this->setIdEmpresa($objEmpresa->getIdEmpresa());
-                        $this->setObjResponsable($objResponsable->getNroEmpleado());
+                        //$this->setIdEmpresa($objEmpresa->getIdEmpresa());
+                        //$this->setObjResponsable($objResponsable->getNroEmpleado());
+                        $this->setIdEmpresa($objEmpresa);
+                        $this->setObjResponsable($objResponsable);
                         $this->setImporte($row2['vimporte']);
                         $this->setTipoAsiento($row2['tipoAsiento']);
                         $this->setIdayvuelta($row2['idayvuelta']);
@@ -346,18 +352,24 @@
         public function listarDatosViajes() {
             $arregloPasajeros = $this->listarPasajeros();
             $pasajeros = count($arregloPasajeros);
-            $cadenaResponsable = "";
+            /*$cadenaResponsable = "";
             $cadenaEmpresa = "";
             $responsable = new ResponsableV();
             $empresa = new Empresa();
+            $arrayResponsable = $responsable->listar($this->getObjResponsable());
+            $cadenaEmpresa = $empresa->listar($this->getIdEmpresa());
+            $arrayResponsable = $responsable->listar("");
+            $arrayEmpresa = $empresa->listar("");
+
             //Se obtienen los datos del responsable del viaje:
             if ($responsable->Buscar($this->getObjResponsable())) {
-                $cadenaResponsable .= $responsable;
+                $cadenaResponsable .= $responsable->getNroEmpleado();
             }
             //Se obtienen los datos de la empresa asociada al viaje:
             if ($empresa->Buscar($this->getIdEmpresa())){
                 $cadenaEmpresa .= $empresa;
-            }
+            }*/
+
             //Se obtienen los datos de los pasajeros del viaje:
             if ($pasajeros == 0) {
                 $cadenaPasajero = " >>> El viaje no tiene pasajeros.\n";
@@ -373,8 +385,11 @@
                     ."+| Trayectoria: ".$this->getIdayvuelta()."\n"
                     ."+| Importe del viaje: ".$this->getImporte()."\n"
                     //."+| ID Empresa: ".$this->getIdEmpresa()."\n"
-                    .$cadenaEmpresa."\n"
-                    .$cadenaResponsable."\n"
+                    //."+| Nro. Responsable: ".$this->getObjResponsable()."\n";
+                    //.$cadenaEmpresa."\n"
+                    //.$cadenaResponsable."\n";
+                    .$this->getIdEmpresa()."\n"
+                    .$this->getObjResponsable()."\n"
                     ."-- -- -- LISTA DE PASAJEROS -- -- --\n".$cadenaPasajero."\n";
             return $cadena;
         }
@@ -388,7 +403,7 @@
             $i = 1;
             $cadenaPasajero = "";
             foreach ($arrayPasajeros as $elemento) {
-                $cadenaPasajero .= "PASAJERO (".$i.") ".$elemento;
+                $cadenaPasajero .= "\nPASAJERO (".$i.") ".$elemento;
                 $i++;
             }
             return $cadenaPasajero;
